@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart' show expect, group, isA, setUp, tearDownAll, test, throwsA;
 
-
 import '../lib/models/user.dart';
 import '../lib/user_holder.dart';
 
@@ -23,7 +22,7 @@ void main() {
     expect("kaparray@gmail.com", holder.users["kaparray@gmail.com"].email);
     expect("Skill Branch", holder.users["kaparray@gmail.com"].name);
   });
-/*
+
   test('getUserByLogin', () {
     User user = User(name: "Dan Tot", phone: "+15750761449", email: "dan.tot@yandex.ru");
     holder.users[user.login] = user;
@@ -121,7 +120,7 @@ void main() {
       expect(() => holder.findUserInFriends(user.login, friends[1]), throwsA(isA<Exception>()));
     });
   });
-
+/*
   test('Test: UserHolder.importUsers()', () {
     User user = User(name: "Dan Tot", phone: "+1 (231) 076-1449", email: "dan.tot@yandex.ru");
 
@@ -138,5 +137,5 @@ void main() {
     expect(users[0].phone, user.phone);
   });
 
-*/
+ */
 }

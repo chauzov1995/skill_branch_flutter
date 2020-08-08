@@ -47,7 +47,7 @@ class User {
       throw Exception("Enter don't empty phone number");
     } else if (!RegExp(pattern).hasMatch(phone)) {
       throw Exception(
-          "Enter a valid phone number stating with a + and containing 11 digits");
+          "Enter a valid phone number starting with a + and containing 11 digits");
     }
     return phone;
   }
