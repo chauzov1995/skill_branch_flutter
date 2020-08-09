@@ -13,45 +13,50 @@ class UserHolder {
     }
   }
 
-  User registerUserByEmail(String fullName, String email) {
-    User user = User(name: fullName, phone: '', email: email);
+  User registerUserByEmail(String name, String email) {
+    User user = User(name: name, email: email);
 
     if (!users.containsKey(user.login)) {
-      return user;
+      users[user.login] = user;
     } else {
       Exception('A user with this email already exists');
     }
+    return user;
   }
 
   User getUserByLogin(String login) {
     if (users.containsKey(login)) {
-      return users[login];
     } else {
       throw Exception("User does not exist");
     }
+    return users[login];
   }
 
   User registerUserByPhone(String fullName, String phone) {
-    User user = User(name: fullName, phone: phone, email: '');
+    User user = User(name: fullName, phone: phone);
 
     if (!users.containsKey(user.login)) {
-      return user;
+      users[user.login] = user;
     } else {
       Exception('A user with this phone already exists');
     }
+    return user;
   }
 
   User findUserInFriends(String fullName, User user) {
     User user2 = User(name: fullName, phone: '', email: '');
     if (user2.friends.contains(user)) {
-      return user2.friends[user2.friends.indexOf(user)];
     } else
       Exception("${user.login} is not a friend of the login");
+
+    return user2.friends[user2.friends.indexOf(user)];
   }
 
-  void setFriends(String fullName, User user) {
+  void setFriends(String fullName, List<User> user) {
     User user2 = User(name: fullName, phone: '', email: '');
-    Iterable<User> friends = [user];
+    Iterable<User> friends = user;
     user2.addFriend(friends);
   }
+
+  List<User> importUsers(List<String> spisuser) {}
 }

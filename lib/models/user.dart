@@ -1,8 +1,8 @@
-import '../string_util.dart';
+import 'package:FlutterGalleryApp/string_util.dart';
 
 enum LoginType { email, phone }
 
-class User with UserUtils{
+class User with UserUtils {
   String email;
   String phone;
 
@@ -23,14 +23,15 @@ class User with UserUtils{
 
   factory User({String name, String phone, String email}) {
     if (name.isEmpty) throw Exception("User name is empty");
-    if (phone.isEmpty || email.isEmpty)
-      throw Exception("phone or email is empty");
+    bool hasPhone = phone != null && phone.isNotEmpty;
+    bool hasEmail = email != null && email.isNotEmpty;
+    if (!hasPhone && !hasEmail) throw Exception("phone or email is empty");
 
     return User._(
       firstName: _getFirstName(name),
       lastName: _getLastName(name),
-      phone: checkPhone(phone),
-      email: checkEmail(email),
+      phone: hasPhone ? checkPhone(phone) : null,
+      email: hasEmail ? checkEmail(email) : null,
     );
   }
 
@@ -41,7 +42,7 @@ class User with UserUtils{
   static String checkPhone(String phone) {
     String pattern = r"^(?:[+0])?[0-9]{11}";
 
-    phone = phone.replaceAll(RegExp("[^+\\d"), "");
+    phone = phone.replaceAll(RegExp("[^+\\d]"), "");
 
     if (phone == null || phone.isEmpty) {
       throw Exception("Enter don't empty phone number");
@@ -53,10 +54,14 @@ class User with UserUtils{
   }
 
   static String checkEmail(String email) {
-    // String pattern = r"^(?:+0])?(0-9){11}";
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
 
     if (email == null || email.isEmpty) {
       throw Exception("Enter don't empty phone number");
+    } else if (!RegExp(pattern).hasMatch(email)) {
+      throw Exception(
+          "Enter a valid phone number starting with a + and containing 11 digits");
     }
     return email;
   }
