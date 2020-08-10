@@ -88,7 +88,7 @@ class User with UserUtils {
     }
   }
 
-  void addFriend(Iterable<User> newFriends) {
+  void addFriend(List<User> newFriends) {
     friends.addAll(newFriends);
   }
 

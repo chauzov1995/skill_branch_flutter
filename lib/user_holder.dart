@@ -19,7 +19,7 @@ class UserHolder {
     if (!users.containsKey(user.login)) {
       users[user.login] = user;
     } else {
-      Exception('A user with this email already exists');
+      throw Exception('A user with this email already exists');
     }
     return user;
   }
@@ -43,20 +43,35 @@ class UserHolder {
     return user;
   }
 
-  User findUserInFriends(String fullName, User user) {
-    User user2 = User(name: fullName, phone: '', email: '');
-    if (user2.friends.contains(user)) {
-    } else
-      Exception("${user.login} is not a friend of the login");
-
-    return user2.friends[user2.friends.indexOf(user)];
+  User findUserInFriends(String login, User friendsss) {
+    User user = users[login];
+    bool isYes = false;
+    for (var item in user.friends) {
+      if (item.login == friendsss.login) {
+        isYes = true;
+      }
+    }
+    if (isYes)
+      return friendsss;
+    else
+      throw Exception("${friendsss.login} is not a friend of the login");
   }
 
-  void setFriends(String fullName, List<User> user) {
-    User user2 = User(name: fullName, phone: '', email: '');
-    Iterable<User> friends = user;
-    user2.addFriend(friends);
+  void setFriends(String login, List<User> user) {
+    User user2 = users[login];
+
+    user2.addFriend(user);
   }
 
-  List<User> importUsers(List<String> spisuser) {}
+  List<User> importUsers(List<String> spisuser) {
+    List<User> usersimp = [];
+    for (var item in spisuser) {
+      usersimp.add(User(
+          name: item.split(';')[0].trim(),
+          email: item.split(';')[1].trim(),
+          phone: item.split(';')[2].trim()));
+    }
+
+    return usersimp;
+  }
 }
