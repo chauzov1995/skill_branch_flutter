@@ -10,7 +10,7 @@ class User with UserUtils {
   String _firstName;
   LoginType _type;
 
-  List<User> friends = <User>[];
+  List<User> friends = List<User>();
 
   User._({String firstName, String lastName, String phone, String email})
       : this._firstName = firstName,
@@ -54,8 +54,7 @@ class User with UserUtils {
   }
 
   static String checkEmail(String email) {
-    String pattern =
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    String pattern = r"^[a-zA-Z0-9.]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9]+";
 
     if (email == null || email.isEmpty) {
       throw Exception("Enter don't empty phone number");
@@ -77,7 +76,7 @@ class User with UserUtils {
 
   @override
   bool operator ==(Object object) {
-    if (object != null) {
+    if (object == null) {
       return false;
     }
 
@@ -88,7 +87,7 @@ class User with UserUtils {
     }
   }
 
-  void addFriend(List<User> newFriends) {
+  void addFriend(Iterable<User> newFriends) {
     friends.addAll(newFriends);
   }
 
@@ -97,12 +96,12 @@ class User with UserUtils {
   }
 
   String get userInfo => '''
-  name: $name
-  email: $email
-  firstName: $_firstName
-  lastName: $_lastName
-  friends: ${friends.toString()}
-  \\n
+    name: $name
+    email: $email
+    firstName: $_firstName
+    lastName: $_lastName
+    friends: ${friends.toList()}
+    \\n
   ''';
 
   @override
@@ -111,7 +110,7 @@ class User with UserUtils {
     '
     name: $name
     email: $email
-    friends: ${friends.toString()}
+    friends: ${friends.toList()}
   """;
   }
 }
