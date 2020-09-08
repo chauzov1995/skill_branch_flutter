@@ -8,12 +8,22 @@ const String kFLutterDash =
     'https://miro.medium.com/max/512/1*6Xz5i8qL9eu8RVISKIMZKQ.png';
 
 class FullScreenImage extends StatefulWidget {
-  FullScreenImage({this.userName, this.altDescription, this.name, Key key})
+  FullScreenImage(
+      {this.userName,
+      this.altDescription,
+      this.name,
+      Key key,
+      this.photo,
+      this.userPhoto,
+      this.heroTag})
       : super(key: key);
 
   final String userName;
   final String altDescription;
   final String name;
+  final String photo;
+  final String userPhoto;
+  final String heroTag;
 
   @override
   State<StatefulWidget> createState() {
@@ -25,6 +35,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
   String userName;
   String altDescription;
   String name;
+  String heroTag;
 
   @override
   void initState() {
@@ -32,6 +43,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
     userName = widget.userName;
     altDescription = widget.altDescription;
     name = widget.name;
+    heroTag = widget.heroTag;
   }
 
   @override
@@ -47,8 +59,11 @@ class _FullScreenImageState extends State<FullScreenImage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Photo(
-            photoLink: kFLutterDash,
+          Hero(
+            tag: heroTag,
+            child: Photo(
+              photoLink: kFLutterDash,
+            ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

@@ -1,5 +1,6 @@
 import 'package:FlutterGalleryApp/res/colors.dart';
 import 'package:FlutterGalleryApp/res/res.dart';
+import 'package:FlutterGalleryApp/screens/photo_screen.dart';
 import 'package:FlutterGalleryApp/widgets/widgets.dart';
 
 import 'package:flutter/material.dart';
@@ -37,23 +38,33 @@ class _FeedsState extends State<Feed> {
   }
 
   Widget _buildItem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Photo(
-          photoLink: kFlutterDash,
-        ),
-        _buildPhotoMeta(),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Text(
-            'This is Flutter Dash. I love him',
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: AppStyles.h3.copyWith(color: AppColors.black),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) {
+          return FullScreenImage();
+        }));
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Hero(
+            tag: 'tag',
+            child: Photo(
+              photoLink: kFlutterDash,
+            ),
           ),
-        )
-      ],
+          _buildPhotoMeta(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              'This is Flutter Dash. I love him',
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: AppStyles.h3.copyWith(color: AppColors.black),
+            ),
+          )
+        ],
+      ),
     );
   }
 

@@ -1,4 +1,3 @@
-import 'package:FlutterGalleryApp/screens/feed_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/home.dart';
