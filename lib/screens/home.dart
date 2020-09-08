@@ -1,6 +1,7 @@
-import 'package:FlutterGalleryApp/screens/feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:FlutterGalleryApp/res/res.dart';
+
+import 'feed_screen.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,41 +12,50 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int currentTab = 0;
-  List<Widget> pages = [Feed(), Container(), Container()];
+  final PageStorageBucket bucket = PageStorageBucket();
 
+  List<Widget> pages = [
+    Feed(key: PageStorageKey('FeedPage')),
+    Container(),
+    Container()
+  ];
+
+  final List<BottomNavyBarItem> _tabs = [
+    BottomNavyBarItem(
+      asset: AppIcons.home,
+      title: Text('Feed'),
+      activeColor: AppColors.dodgerBlue,
+      inactiveColor: AppColors.manatee,
+    ),
+    BottomNavyBarItem(
+      asset: AppIcons.home,
+      title: Text('Search'),
+      activeColor: AppColors.dodgerBlue,
+      inactiveColor: AppColors.manatee,
+    ),
+    BottomNavyBarItem(
+      asset: AppIcons.home,
+      title: Text('User'),
+      activeColor: AppColors.dodgerBlue,
+      inactiveColor: AppColors.manatee,
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavyBar(
+        showElevation: true,
         itemCornderRadious: 8,
         curve: Curves.ease,
+        currentTab: currentTab,
         onItemSelected: (int index) {
           setState(() {
             currentTab = index;
           });
         },
-        items: [
-          BottomNavyBarItem(
-            asset: AppIcons.home,
-            title: Text('Feed'),
-            activeColor: AppColors.dodgerBlue,
-            inactiveColor: AppColors.manatee,
-          ),
-          BottomNavyBarItem(
-            asset: AppIcons.home,
-            title: Text('Search'),
-            activeColor: AppColors.dodgerBlue,
-            inactiveColor: AppColors.manatee,
-          ),
-          BottomNavyBarItem(
-            asset: AppIcons.home,
-            title: Text('User'),
-            activeColor: AppColors.dodgerBlue,
-            inactiveColor: AppColors.manatee,
-          ),
-        ],
+        items: _tabs,
       ),
-      body: pages[currentTab],
+      body: PageStorage(bucket: bucket, child: pages[currentTab]),
     );
   }
 }
@@ -53,17 +63,22 @@ class _HomeState extends State<Home> {
 class BottomNavyBar extends StatelessWidget {
   BottomNavyBar({
     Key key,
-    this.backgroundColor = Colors.white,
-    this.showElevation = true,
-    this.containerHeight = 56,
-    this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
-    this.items,
-    this.onItemSelected,
     this.currentTab,
+    this.showElevation = true,
+    this.backgroundColor, //= Colors.white,
+    this.itemCornderRadious = 50,
+    this.containerHeight = 56,
     this.animationDuration = const Duration(microseconds: 270),
-    this.itemCornderRadious = 24,
-    this.curve,
-  }) : super(key: key);
+    this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
+    @required this.items,
+    @required this.onItemSelected,
+    this.curve = Curves.linear,
+  }) {
+    assert(items != null);
+    assert(items.length >= 2 && items.length <= 5);
+    assert(onItemSelected != null);
+    assert(curve != null);
+  }
 
   final Color backgroundColor;
   final bool showElevation;
@@ -78,8 +93,12 @@ class BottomNavyBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = (backgroundColor == null)
+        ? Theme.of(context).bottomAppBarColor
+        : backgroundColor;
+
     return Container(
-      decoration: BoxDecoration(color: backgroundColor, boxShadow: [
+      decoration: BoxDecoration(color: bgColor, boxShadow: [
         if (showElevation) const BoxShadow(color: Colors.black12, blurRadius: 2)
       ]),
       child: SafeArea(
@@ -96,8 +115,8 @@ class BottomNavyBar extends StatelessWidget {
               child: _ItemWidget(
                 curve: curve,
                 animationDuration: animationDuration,
-                backgroundColor: backgroundColor,
-                isSelected: currentTab == index,
+                backgroundColor: bgColor,
+                isSelected: currentTab == index ? true : false,
                 item: item,
                 itemCornderRadious: itemCornderRadious,
               ),
@@ -133,38 +152,49 @@ class _ItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: animationDuration,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
       width: isSelected
           ? 150
           : (MediaQuery.of(context).size.width - 150 - 8 * 4 - 4 * 2) / 2,
+      height: double.maxFinite,
+      duration: animationDuration,
+      // padding: const EdgeInsets.symmetric(horizontal: 5),
+
       curve: curve,
       decoration: BoxDecoration(
           color:
               isSelected ? item.activeColor.withOpacity(0.2) : backgroundColor,
           borderRadius: BorderRadius.circular(itemCornderRadious)),
-      child: Row(
-        children: [
-          Icon(
-            item.asset,
-            size: 20,
-            color: isSelected ? item.activeColor : item.inactiveColor,
-          ),
-          SizedBox(
-            width: 4,
-          ),
-          Expanded(
-              child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: DefaultTextStyle.merge(
-                child: item.title,
-                textAlign: item.textAlign,
-                style: TextStyle(
-                    color: isSelected ? item.activeColor : item.inactiveColor,
-                    fontWeight: FontWeight.bold),
-                maxLines: 1),
-          ))
-        ],
+      child: Container(
+        width: isSelected
+            ? 150
+            : (MediaQuery.of(context).size.width - 150 - 8 * 4 - 4 * 2) / 2,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              item.asset,
+              size: 20,
+              color: isSelected ? item.activeColor : item.inactiveColor,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Expanded(
+                child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: DefaultTextStyle.merge(
+                  child: item.title,
+                  textAlign: item.textAlign,
+                  style: TextStyle(
+                      color: isSelected ? item.activeColor : item.inactiveColor,
+                      fontWeight: FontWeight.bold),
+                  maxLines: 1),
+            ))
+          ],
+        ),
       ),
     );
   }
@@ -172,9 +202,9 @@ class _ItemWidget extends StatelessWidget {
 
 class BottomNavyBarItem {
   BottomNavyBarItem(
-      {this.asset,
-      this.title,
-      this.activeColor,
+      {@required this.asset,
+      @required this.title,
+      this.activeColor = Colors.blue,
       this.inactiveColor,
       this.textAlign}) {
     assert(asset != null, 'Asset is null');
