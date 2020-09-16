@@ -22,7 +22,7 @@ class _LikeButtonState extends State<LikeButton> {
   int likeCount;
   @override
   void initState() {
-    // TODO: implement initState
+  
     super.initState();
     isLiked = widget.isLiked;
     likeCount = widget.likeCount;

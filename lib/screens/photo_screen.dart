@@ -3,6 +3,7 @@ import 'package:FlutterGalleryApp/res/styles.dart';
 import 'package:FlutterGalleryApp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 const String kFLutterDash =
     'https://miro.medium.com/max/512/1*6Xz5i8qL9eu8RVISKIMZKQ.png';
@@ -31,11 +32,13 @@ class FullScreenImage extends StatefulWidget {
   }
 }
 
-class _FullScreenImageState extends State<FullScreenImage> {
+class _FullScreenImageState extends State<FullScreenImage>
+    with TickerProviderStateMixin {
   String userName;
   String altDescription;
   String name;
   String heroTag;
+  AnimationController _controller;
 
   @override
   void initState() {
@@ -44,6 +47,16 @@ class _FullScreenImageState extends State<FullScreenImage> {
     altDescription = widget.altDescription;
     name = widget.name;
     heroTag = widget.heroTag;
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -134,7 +147,20 @@ class _FullScreenImageState extends State<FullScreenImage> {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Row(
         children: [
-          UserAvatar('https://skill-branch.ru/img/speakers/Adechenko.jpg'),
+          AnimatedBuilder(
+              animation: Tween<Opacity>(
+                begin: const Opacity(
+                  opacity: 0,
+                ),
+                end: const Opacity(
+                  opacity: 1,
+                ),
+              ).animate(_controller),
+              builder: (BuildContext context, Widget child) {
+                return child;
+              },
+              child: UserAvatar(
+                  'https://skill-branch.ru/img/speakers/Adechenko.jpg')),
           SizedBox(
             width: 6,
           ),

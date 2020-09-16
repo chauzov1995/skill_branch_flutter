@@ -21,19 +21,21 @@ class _FeedsState extends State<Feed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                _buildItem(),
-                Divider(
-                  thickness: 2,
-                  color: AppColors.mercury,
-                ),
-              ],
-            );
-          }),
+      body: Hero(
+          tag: 'tag',
+          child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  children: [
+                    _buildItem(),
+                    Divider(
+                      thickness: 2,
+                      color: AppColors.mercury,
+                    ),
+                  ],
+                );
+              })),
     );
   }
 
@@ -41,18 +43,26 @@ class _FeedsState extends State<Feed> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) {
-          return FullScreenImage();
+          return FullScreenImage(
+            photo: kFlutterDash,
+            altDescription: 'This is Flutter dash. I love him :)',
+            userName: 'kaparray',
+            name: 'Kirill Adeshchenko',
+            userPhoto: 'https://skill-branch.ru/img/speakers/Adechenko.jpg',
+            heroTag: 'tag',
+          );
         }));
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Hero(
-            tag: 'tag',
-            child: Photo(
-              photoLink: kFlutterDash,
-            ),
+          // Hero(
+          //    tag: 'tag',
+          //   child:
+          Photo(
+            photoLink: kFlutterDash,
           ),
+          //  ),
           _buildPhotoMeta(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
