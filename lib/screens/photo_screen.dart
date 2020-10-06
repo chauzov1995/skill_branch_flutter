@@ -32,13 +32,15 @@ class FullScreenImage extends StatefulWidget {
   }
 }
 
-class _FullScreenImageState extends State<FullScreenImage>
-    with TickerProviderStateMixin {
+class _FullScreenImageState extends State<FullScreenImage> 
+    with TickerProviderStateMixin  {
   String userName;
   String altDescription;
   String name;
   String heroTag;
   AnimationController _controller;
+    Animation<double> _first_anim;
+    Animation<double> _second_anim;
 
   @override
   void initState() {
@@ -47,10 +49,17 @@ class _FullScreenImageState extends State<FullScreenImage>
     altDescription = widget.altDescription;
     name = widget.name;
     heroTag = widget.heroTag;
+
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
-    )..repeat();
+    )..forward();
+
+    _first_anim=Tween<double>(begin: 0, end: 1.0).animate( CurvedAnimation(parent: _controller, curve: Interval(0.0, 0.5, curve: Curves.ease)));
+    _second_anim=Tween<double>(begin: 0, end: 1.0).animate( CurvedAnimation(parent: _controller, curve: Interval(0.5, 1.0, curve: Curves.ease)));
+
+    // _controller = Tween(begin: 0.5, end: 1.0).animate(_controller);
   }
 
   @override
@@ -148,22 +157,29 @@ class _FullScreenImageState extends State<FullScreenImage>
       child: Row(
         children: [
           AnimatedBuilder(
-              animation: Tween<Opacity>(
-                begin: const Opacity(
-                  opacity: 0,
-                ),
-                end: const Opacity(
-                  opacity: 1,
-                ),
-              ).animate(_controller),
-              builder: (BuildContext context, Widget child) {
-                return child;
-              },
-              child: UserAvatar(
-                  'https://skill-branch.ru/img/speakers/Adechenko.jpg')),
+            
+            animation: _first_anim,
+            builder: (BuildContext context, Widget child) {
+              return Opacity(
+                
+                opacity: _first_anim.value,
+                child: UserAvatar(
+                    'https://skill-branch.ru/img/speakers/Adechenko.jpg'),
+              );
+            },
+          ),
           SizedBox(
             width: 6,
           ),
+          
+            AnimatedBuilder(
+            
+            animation: _second_anim,
+            builder: (BuildContext context, Widget child) {
+                return Opacity(
+                
+                opacity: _second_anim.value,
+                child:
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,7 +190,7 @@ class _FullScreenImageState extends State<FullScreenImage>
                 style: AppStyles.h5Black.copyWith(color: AppColors.manatee),
               )
             ],
-          )
+            ));})
         ],
       ),
     );
