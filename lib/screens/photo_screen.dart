@@ -8,6 +8,28 @@ import 'dart:math' as math;
 const String kFLutterDash =
     'https://miro.medium.com/max/512/1*6Xz5i8qL9eu8RVISKIMZKQ.png';
 
+class FullScreenImageArguments {
+  FullScreenImageArguments({
+    this.userName,
+    this.altDescription,
+    this.name,
+    this.photo,
+    this.userPhoto,
+    this.heroTag,
+    this.key,
+    this.routeSettings,
+  });
+
+  final String userName;
+  final String altDescription;
+  final String name;
+  final String photo;
+  final String userPhoto;
+  final String heroTag;
+  final Key key;
+  final RouteSettings routeSettings;
+}
+
 class FullScreenImage extends StatefulWidget {
   FullScreenImage(
       {this.userName,
@@ -32,15 +54,15 @@ class FullScreenImage extends StatefulWidget {
   }
 }
 
-class _FullScreenImageState extends State<FullScreenImage> 
-    with TickerProviderStateMixin  {
+class _FullScreenImageState extends State<FullScreenImage>
+    with TickerProviderStateMixin {
   String userName;
   String altDescription;
   String name;
   String heroTag;
   AnimationController _controller;
-    Animation<double> _first_anim;
-    Animation<double> _second_anim;
+  Animation<double> _first_anim;
+  Animation<double> _second_anim;
 
   @override
   void initState() {
@@ -50,14 +72,15 @@ class _FullScreenImageState extends State<FullScreenImage>
     name = widget.name;
     heroTag = widget.heroTag;
 
-
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     )..forward();
 
-    _first_anim=Tween<double>(begin: 0, end: 1.0).animate( CurvedAnimation(parent: _controller, curve: Interval(0.0, 0.5, curve: Curves.ease)));
-    _second_anim=Tween<double>(begin: 0, end: 1.0).animate( CurvedAnimation(parent: _controller, curve: Interval(0.5, 1.0, curve: Curves.ease)));
+    _first_anim = Tween<double>(begin: 0, end: 1.0).animate(CurvedAnimation(
+        parent: _controller, curve: Interval(0.0, 0.5, curve: Curves.ease)));
+    _second_anim = Tween<double>(begin: 0, end: 1.0).animate(CurvedAnimation(
+        parent: _controller, curve: Interval(0.5, 1.0, curve: Curves.ease)));
 
     // _controller = Tween(begin: 0.5, end: 1.0).animate(_controller);
   }
@@ -68,16 +91,56 @@ class _FullScreenImageState extends State<FullScreenImage>
     super.dispose();
   }
 
+  AppBar _buildAppBar() {
+//String title=ModalRoute.of(context).settings.arguments;
+    return AppBar(
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.more_vert,
+            color: AppColors.grayChateau,
+          ),
+          onPressed: () {
+            showModalBottomSheet(
+              shape: RoundedRectangleBorder(  borderRadius: BorderRadius.circular(10)),
+                context: context,
+                builder: (context) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.mercury,
+                    
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(10, (index) => FlutterLogo()),
+                    ),
+                  );
+                });
+          },
+        )
+      ],
+      elevation: 0,
+      title: Text(
+        'Photo',
+        style: AppStyles.h2Black,
+      ),
+      leading: IconButton(
+        icon: Icon(
+          CupertinoIcons.back,
+          color: AppColors.grayChateau,
+        ),
+        onPressed: () => Navigator.pop(context),
+      ),
+      backgroundColor: AppColors.white,
+      centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Photo'),
-        leading: IconButton(
-          icon: Icon(CupertinoIcons.back),
-          onPressed: () {},
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -106,7 +169,14 @@ class _FullScreenImageState extends State<FullScreenImage>
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () => true,
+                        onTap: () {
+                          showDialog(context: context, builder: (context)=>AlertDialog(
+title: Text('Alert Dialog title'),
+content: Text('Alert Dialog content'),
+actions: [],
+
+                          ));
+                        },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(7),
                           child: Container(
@@ -157,11 +227,9 @@ class _FullScreenImageState extends State<FullScreenImage>
       child: Row(
         children: [
           AnimatedBuilder(
-            
             animation: _first_anim,
             builder: (BuildContext context, Widget child) {
               return Opacity(
-                
                 opacity: _first_anim.value,
                 child: UserAvatar(
                     'https://skill-branch.ru/img/speakers/Adechenko.jpg'),
@@ -171,26 +239,24 @@ class _FullScreenImageState extends State<FullScreenImage>
           SizedBox(
             width: 6,
           ),
-          
-            AnimatedBuilder(
-            
-            animation: _second_anim,
-            builder: (BuildContext context, Widget child) {
+          AnimatedBuilder(
+              animation: _second_anim,
+              builder: (BuildContext context, Widget child) {
                 return Opacity(
-                
-                opacity: _second_anim.value,
-                child:
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(name.toString(), style: AppStyles.h1Black),
-              Text(
-                '@$userName',
-                style: AppStyles.h5Black.copyWith(color: AppColors.manatee),
-              )
-            ],
-            ));})
+                    opacity: _second_anim.value,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(name.toString(), style: AppStyles.h1Black),
+                        Text(
+                          '@$userName',
+                          style: AppStyles.h5Black
+                              .copyWith(color: AppColors.manatee),
+                        )
+                      ],
+                    ));
+              })
         ],
       ),
     );
