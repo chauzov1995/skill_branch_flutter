@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:FlutterGalleryApp/app.dart';
-import 'package:FlutterGalleryApp/screens/demo_screen.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:FlutterGalleryApp/res/res.dart';
@@ -95,8 +94,8 @@ subscription.cancel();
         currentTab: currentTab,
         onItemSelected: (int index)async {
           if(index==1){
-var value = await Navigator.push(context, MaterialPageRoute(builder: (context)=>DemoScreen()));
-print(value);
+//var value = await Navigator.push(context, MaterialPageRoute(builder: (context)=>DemoScreen()));
+//print(value);
           }else{
 
           
