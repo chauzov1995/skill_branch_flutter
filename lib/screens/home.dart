@@ -1,3 +1,4 @@
+import 'package:FlutterGalleryApp/screens/demo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:FlutterGalleryApp/res/res.dart';
 
@@ -48,10 +49,16 @@ class _HomeState extends State<Home> {
         itemCornderRadious: 8,
         curve: Curves.ease,
         currentTab: currentTab,
-        onItemSelected: (int index) {
+        onItemSelected: (int index)async {
+          if(index==1){
+var value = await Navigator.push(context, MaterialPageRoute(builder: (context)=>DemoScreen()));
+print(value);
+          }else{
+
+          
           setState(() {
             currentTab = index;
-          });
+          });}
         },
         items: _tabs,
       ),

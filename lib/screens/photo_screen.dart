@@ -102,10 +102,12 @@ class _FullScreenImageState extends State<FullScreenImage>
           ),
           onPressed: () {
             showModalBottomSheet(
-              shape: RoundedRectangleBorder(  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(  borderRadius: BorderRadius.circular(100)),
                 context: context,
                 builder: (context) {
-                  return Container(
+                  return ClipRRect(
+               //     borderRadius: BorderRadius.circular(100),
+                    child:  Container(
                     decoration: BoxDecoration(
                       color: AppColors.mercury,
                     
@@ -115,7 +117,7 @@ class _FullScreenImageState extends State<FullScreenImage>
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(10, (index) => FlutterLogo()),
                     ),
-                  );
+                   ) );
                 });
           },
         )
@@ -166,61 +168,77 @@ class _FullScreenImageState extends State<FullScreenImage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   LikeButton(2157, true),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
+                  SizedBox(width:14),
+                  Expanded(child:_buildButton('Save' , (){
                           showDialog(context: context, builder: (context)=>AlertDialog(
 title: Text('Alert Dialog title'),
 content: Text('Alert Dialog content'),
-actions: [],
+actions: [
+  FlatButton(child: Text('Ok'), onPressed:(){
+    Navigator.of(context).pop();
+  } ,),
+   FlatButton(child: Text('Cancel'), onPressed:(){
+    Navigator.of(context).pop();
+  } ,)
+],
 
                           ));
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(7),
-                          child: Container(
-                            height: 36,
-                            width: 105,
-                            color: AppColors.dodgerBlue,
-                            child: Center(
-                              child: Text(
-                                'Save',
-                                style: AppStyles.h3,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      GestureDetector(
-                        onTap: () => true,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(7),
-                          child: Container(
-                            height: 36,
-                            width: 105,
-                            color: AppColors.dodgerBlue,
-                            child: Center(
-                              child: Text(
-                                'Visit',
-                                style: AppStyles.h3,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
+                        })),
+                      SizedBox(width:12),
+                   Expanded(child:_buildButton('Visit' ,() async {
+
+OverlayState overlayState = Overlay.of(context);
+
+OverlayEntry overlayEndtry=OverlayEntry(builder: (BuildContext context){
+return Positioned(
+  top: MediaQuery.of(context).viewInsets.top+50,
+  child: Material(color: Colors.transparent,child: Container(
+  alignment: Alignment.center,
+  width: MediaQuery.of(context).size.width,
+  child: Container(
+    margin: EdgeInsets.symmetric(horizontal: 20),
+    padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+    decoration: BoxDecoration(
+      color: AppColors.mercury,
+      borderRadius: BorderRadius.circular(12)
+    ),
+    child: Text('Skillbranch')
+  ),
+),)
+
+,);
+});
+
+overlayState.insert(overlayEndtry);
+await Future.delayed(Duration(seconds: 1));
+overlayEndtry.remove();
+
+                   })),                
                 ],
               ))
         ],
       ),
     );
   }
-
+  Widget _buildButton(String text, VoidCallback callback) {
+ return GestureDetector(
+                        onTap: callback,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(7),
+                          child: Container(
+                            height: 36,
+                            width: 105,
+                            color: AppColors.dodgerBlue,
+                            child: Center(
+                              child: Text(
+                                text,
+                                style: AppStyles.h3,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+  }
   Widget _buildPhotoMeta() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
