@@ -1,10 +1,18 @@
+import 'dart:async';
+
+import 'package:FlutterGalleryApp/app.dart';
 import 'package:FlutterGalleryApp/screens/demo_screen.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:FlutterGalleryApp/res/res.dart';
 
 import 'feed_screen.dart';
 
 class Home extends StatefulWidget {
+  Home(this.onConnectivityChanged);
+  final Stream<ConnectivityResult> onConnectivityChanged;
+
+  
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -12,6 +20,42 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  StreamSubscription subscription;
+
+    @override
+  void initState() {
+    super.initState();
+
+
+    
+    subscription = widget.onConnectivityChanged.listen((ConnectivityResult result) {
+      switch (result) {
+        case ConnectivityResult.wifi:
+// Вызовете удаление Overlay тут
+(ConnectivityOverlay()).removeOverlay(context);
+
+          break;
+        case ConnectivityResult.mobile:
+// Вызовете удаление Overlay тут
+(ConnectivityOverlay()).removeOverlay(context);
+          break;
+        case ConnectivityResult.none:
+// Вызовете отображения Overlay тут
+(ConnectivityOverlay()).showOverlay(context, null);
+          break;
+      }
+    
+    });
+  }
+
+  @override
+  void dispose() {
+
+subscription.cancel();
+    super.dispose();
+  }
+
+
   int currentTab = 0;
   final PageStorageBucket bucket = PageStorageBucket();
 

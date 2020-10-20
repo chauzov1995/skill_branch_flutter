@@ -1,9 +1,12 @@
 import 'package:FlutterGalleryApp/res/colors.dart';
 import 'package:FlutterGalleryApp/res/styles.dart';
+import 'package:FlutterGalleryApp/widgets/claim_bottom_sheet.dart';
 import 'package:FlutterGalleryApp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:gallery_saver/gallery_saver.dart';
 
 const String kFLutterDash =
     'https://miro.medium.com/max/512/1*6Xz5i8qL9eu8RVISKIMZKQ.png';
@@ -95,12 +98,16 @@ class _FullScreenImageState extends State<FullScreenImage>
 //String title=ModalRoute.of(context).settings.arguments;
     return AppBar(
       actions: [
+        ClaimBottomSheet()
+           /* 
         IconButton(
           icon: Icon(
             Icons.more_vert,
             color: AppColors.grayChateau,
           ),
           onPressed: () {
+            
+        
             showModalBottomSheet(
               shape: RoundedRectangleBorder(  borderRadius: BorderRadius.circular(100)),
                 context: context,
@@ -119,8 +126,9 @@ class _FullScreenImageState extends State<FullScreenImage>
                     ),
                    ) );
                 });
+             
           },
-        )
+        )   */
       ],
       elevation: 0,
       title: Text(
@@ -171,13 +179,14 @@ class _FullScreenImageState extends State<FullScreenImage>
                   SizedBox(width:14),
                   Expanded(child:_buildButton('Save' , (){
                           showDialog(context: context, builder: (context)=>AlertDialog(
-title: Text('Alert Dialog title'),
-content: Text('Alert Dialog content'),
+title: Text('download photos'),
+content: Text('Are you sure you want to download a photo?'),
 actions: [
-  FlatButton(child: Text('Ok'), onPressed:(){
+  FlatButton(child: Text('Download'), onPressed:(){
+    GallerySaver.saveImage('https://skill-branch.ru/img/speakers/Adechenko.jpg');
     Navigator.of(context).pop();
   } ,),
-   FlatButton(child: Text('Cancel'), onPressed:(){
+   FlatButton(child: Text('Close'), onPressed:(){
     Navigator.of(context).pop();
   } ,)
 ],
@@ -186,6 +195,7 @@ actions: [
                         })),
                       SizedBox(width:12),
                    Expanded(child:_buildButton('Visit' ,() async {
+
 
 OverlayState overlayState = Overlay.of(context);
 
