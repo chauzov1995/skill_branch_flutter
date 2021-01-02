@@ -84,6 +84,8 @@ subscription.cancel();
       inactiveColor: AppColors.manatee,
     ),
   ];
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

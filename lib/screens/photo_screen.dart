@@ -156,7 +156,7 @@ class _FullScreenImageState extends State<FullScreenImage>
         children: [
           Hero(
             tag: heroTag,
-            child: Photo(
+            child: PhotoView(
               photoLink: kFLutterDash,
             ),
           ),

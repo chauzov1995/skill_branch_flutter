@@ -1,5 +1,6 @@
 import 'package:FlutterGalleryApp/res/app_icons.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:FlutterGalleryApp/res/colors.dart';
 
 class LikeButton extends StatefulWidget {
   LikeButton(
@@ -47,11 +48,11 @@ class _LikeButtonState extends State<LikeButton> {
             padding: EdgeInsets.all(8),
             child: Row(
               children: [
-                Icon(isLiked ? AppIcons.like_fill : AppIcons.like),
+                Icon(isLiked ? AppIcons.like_fill : AppIcons.like, color: isLiked ?AppColors.dodgerBlue:AppColors.black),
                 SizedBox(
                   width: 4.21,
                 ),
-                Text(likeCount.toString())
+                Text(likeCount.toString(),style: TextStyle(color: isLiked ?AppColors.dodgerBlue:AppColors.black ),)
               ],
             )),
       ),

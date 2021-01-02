@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 
 void main() {
@@ -19,3 +19,14 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+ */
+import 'package:flutter/material.dart';
+
+import 'app.dart';
+
+
+void main() {
+  runApp(MyApp());
+}
+
+
