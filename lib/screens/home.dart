@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:FlutterGalleryApp/app.dart';
+import 'package:FlutterGalleryApp/screens/profile_screen.dart';
+import 'package:FlutterGalleryApp/screens/search_screen.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:FlutterGalleryApp/res/res.dart';
@@ -60,14 +62,15 @@ subscription.cancel();
 
   List<Widget> pages = [
     Feed(key: PageStorageKey('FeedPage')),
-    Container(),
-    Container()
+    SearchScreen(),
+    ProfileScreen()
+
   ];
 
   final List<BottomNavyBarItem> _tabs = [
     BottomNavyBarItem(
       asset: AppIcons.home,
-      title: Text('Feed'),
+      title: Text('Home'),
       activeColor: AppColors.dodgerBlue,
       inactiveColor: AppColors.manatee,
     ),
@@ -79,7 +82,7 @@ subscription.cancel();
     ),
     BottomNavyBarItem(
       asset: AppIcons.home,
-      title: Text('User'),
+      title: Text('Profile'),
       activeColor: AppColors.dodgerBlue,
       inactiveColor: AppColors.manatee,
     ),
@@ -95,15 +98,15 @@ subscription.cancel();
         curve: Curves.ease,
         currentTab: currentTab,
         onItemSelected: (int index)async {
-          if(index==1){
+      //    if(index==1){
 //var value = await Navigator.push(context, MaterialPageRoute(builder: (context)=>DemoScreen()));
 //print(value);
-          }else{
+       //   }else{
 
           
           setState(() {
             currentTab = index;
-          });}
+          });//}
         },
         items: _tabs,
       ),
