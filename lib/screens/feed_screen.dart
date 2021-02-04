@@ -79,9 +79,8 @@ class _FeedsState extends State<Feed> {
       ):Hero(
           tag: 'tag',
           child: ListView.builder(
-
               controller: _scrollController,
-              itemCount: 10,
+              itemCount: data.length,
               itemBuilder: (BuildContext context, int index) {
                 if (index == data.length) {
                   return Center(

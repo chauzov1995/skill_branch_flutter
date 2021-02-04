@@ -64,7 +64,8 @@ class DataProvider {
         headers: {'Authorization': 'Bearer $authToken'});
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      return PhotoList.fromJson(json.decode(response.body));
+      print(response.body);
+      return PhotoList.fromJson(json.decode(response.body)['results']);
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
     }
@@ -75,7 +76,7 @@ class DataProvider {
     var response = await http.get(
         'https://api.unsplash.com/photos?page=$page&per_page=$perPage',
         headers: {'Authorization': 'Bearer $authToken'});
-
+   // print(response.body);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return PhotoList.fromJson(json.decode(response.body));
     } else {

@@ -1,5 +1,9 @@
+import 'package:FlutterGalleryApp/data_provider.dart';
+import 'package:FlutterGalleryApp/models/photo_list/model.dart';
 import 'package:FlutterGalleryApp/res/colors.dart';
 import 'package:FlutterGalleryApp/res/styles.dart';
+import 'package:FlutterGalleryApp/widgets/photoSearch.dart';
+import 'package:FlutterGalleryApp/widgets/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,25 +17,34 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  final myController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  var data = List<Photo>();
+  int pageCount = 0;
+
   @override
   void initState() {
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.8) {
+        _getData(pageCount);
+      }
+    });
+    print('set listener');
+
     super.initState();
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
+    myController.dispose();
     super.dispose();
   }
 
-  List<String> strings = [
-    'avocado',
-    'lime',
-    'salt',
-    'salt',
-    'salt',
-    'sour cream',
-    'vinegar',
-  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 color: AppColors.mercury,
                 child: TextField(
+                  controller: myController,
                   decoration: InputDecoration(
                     icon: Icon(Icons.search),
                     border: InputBorder.none,
@@ -54,22 +68,27 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     hintText: 'Search',
                   ),
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: (){
+                    print("Second text field: ${myController.text}");
+                    data.clear();
+                    _getData(pageCount);
+                  } ,
                 ))),
       ),
       Expanded(
           child: new Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
         width: double.infinity,
         child: StaggeredGridView.countBuilder(
+          controller: _scrollController,
           crossAxisCount: 3,
-          itemCount: 118,
-          itemBuilder: (BuildContext context, int index) => new Container(
-              color: Colors.green,
-              child: new Center(
-                child: new CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: new Text('$index'),
-                ),
-              )),
+          itemCount: data.length,
+          itemBuilder: (BuildContext context, int index) =>
+              PhotoViewSerach(
+                    photoLink:  data[index].urls.small, placeholder: data[index].color,
+                  ),
+
           staggeredTileBuilder: (int index) {
             switch (index % 18) {
               case 0:
@@ -83,8 +102,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 break;
             }
           },
-          mainAxisSpacing: 4.0,
-          crossAxisSpacing: 4.0,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
         ),
       )),
     ])));
@@ -131,4 +150,17 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
+
+
+  void _getData(int page)async{
+
+    PhotoList tempList = await DataProvider.searchPhotos(keyword: myController.text.trim(),page: page,page_size: 15);
+
+      setState(() {
+
+        data.addAll(tempList.photos.toList());
+        pageCount++;
+      });
+    }
+
 }
