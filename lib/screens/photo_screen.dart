@@ -1,3 +1,4 @@
+import 'package:FlutterGalleryApp/models/photo_list/model.dart';
 import 'package:FlutterGalleryApp/res/colors.dart';
 import 'package:FlutterGalleryApp/res/styles.dart';
 import 'package:FlutterGalleryApp/widgets/claim_bottom_sheet.dart';
@@ -8,47 +9,26 @@ import 'dart:math' as math;
 
 import 'package:gallery_saver/gallery_saver.dart';
 
-const String kFLutterDash =
-    'https://miro.medium.com/max/512/1*6Xz5i8qL9eu8RVISKIMZKQ.png';
 
 class FullScreenImageArguments {
   FullScreenImageArguments({
-    this.userName,
-    this.altDescription,
-    this.name,
     this.photo,
-    this.userPhoto,
-    this.heroTag,
     this.key,
+    this.heroTag,
     this.routeSettings,
   });
 
-  final String userName;
-  final String altDescription;
-  final String name;
-  final String photo;
-  final String userPhoto;
-  final String heroTag;
+  final Photo photo;
   final Key key;
+  final String heroTag;
   final RouteSettings routeSettings;
 }
 
 class FullScreenImage extends StatefulWidget {
-  FullScreenImage(
-      {this.userName,
-      this.altDescription,
-      this.name,
-      Key key,
-      this.photo,
-      this.userPhoto,
-      this.heroTag})
-      : super(key: key);
+  FullScreenImage({Key key, this.photo, this.heroTag}) : super(key: key);
 
-  final String userName;
-  final String altDescription;
-  final String name;
-  final String photo;
-  final String userPhoto;
+  final Photo photo;
+
   final String heroTag;
 
   @override
@@ -70,9 +50,7 @@ class _FullScreenImageState extends State<FullScreenImage>
   @override
   void initState() {
     super.initState();
-    userName = widget.userName;
-    altDescription = widget.altDescription;
-    name = widget.name;
+
     heroTag = widget.heroTag;
 
     _controller = AnimationController(
@@ -99,15 +77,15 @@ class _FullScreenImageState extends State<FullScreenImage>
     return AppBar(
       actions: [
         ClaimBottomSheet()
-           /* 
+        /*
         IconButton(
           icon: Icon(
             Icons.more_vert,
             color: AppColors.grayChateau,
           ),
           onPressed: () {
-            
-        
+
+
             showModalBottomSheet(
               shape: RoundedRectangleBorder(  borderRadius: BorderRadius.circular(100)),
                 context: context,
@@ -117,7 +95,7 @@ class _FullScreenImageState extends State<FullScreenImage>
                     child:  Container(
                     decoration: BoxDecoration(
                       color: AppColors.mercury,
-                    
+
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +104,7 @@ class _FullScreenImageState extends State<FullScreenImage>
                     ),
                    ) );
                 });
-             
+
           },
         )   */
       ],
@@ -157,13 +135,14 @@ class _FullScreenImageState extends State<FullScreenImage>
           Hero(
             tag: heroTag,
             child: PhotoView(
-              photoLink: kFLutterDash,
+              photoLink: widget.photo.urls.regular,
+              //  placeholder: kFLutterDash.,
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(
-              altDescription.toString(),
+            child: widget.photo.description==null?Container(): Text(
+              '${widget.photo.description}',
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: AppStyles.h3.copyWith(color: AppColors.black),
@@ -175,80 +154,92 @@ class _FullScreenImageState extends State<FullScreenImage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  LikeButton(2157, true),
-                  SizedBox(width:14),
-                  Expanded(child:_buildButton('Save' , (){
-                          showDialog(context: context, builder: (context)=>AlertDialog(
-title: Text('download photos'),
-content: Text('Are you sure you want to download a photo?'),
-actions: [
-  FlatButton(child: Text('Download'), onPressed:(){
-    GallerySaver.saveImage('https://skill-branch.ru/img/speakers/Adechenko.jpg');
-    Navigator.of(context).pop();
-  } ,),
-   FlatButton(child: Text('Close'), onPressed:(){
-    Navigator.of(context).pop();
-  } ,)
-],
+                  // LikeButton(2157, true),
+                  SizedBox(width: 14),
+                  Expanded(child: LikeButton(widget.photo)),
+                  Expanded(
+                      child: _buildButton('Save', () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: Text('download photos'),
+                              content: Text(
+                                  'Are you sure you want to download a photo?'),
+                              actions: [
+                                FlatButton(
+                                  child: Text('Download'),
+                                  onPressed: () {
+                                    GallerySaver.saveImage(
+                                        'https://skill-branch.ru/img/speakers/Adechenko.jpg');
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text('Close'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            ));
+                  })),
+                  SizedBox(width: 12),
+                  Expanded(
+                      child: _buildButton('Visit', () async {
+                    OverlayState overlayState = Overlay.of(context);
 
-                          ));
-                        })),
-                      SizedBox(width:12),
-                   Expanded(child:_buildButton('Visit' ,() async {
+                    OverlayEntry overlayEndtry =
+                        OverlayEntry(builder: (BuildContext context) {
+                      return Positioned(
+                        top: MediaQuery.of(context).viewInsets.top + 50,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width,
+                            child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 20),
+                                padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                                decoration: BoxDecoration(
+                                    color: AppColors.mercury,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Text('Skillbranch')),
+                          ),
+                        ),
+                      );
+                    });
 
-
-OverlayState overlayState = Overlay.of(context);
-
-OverlayEntry overlayEndtry=OverlayEntry(builder: (BuildContext context){
-return Positioned(
-  top: MediaQuery.of(context).viewInsets.top+50,
-  child: Material(color: Colors.transparent,child: Container(
-  alignment: Alignment.center,
-  width: MediaQuery.of(context).size.width,
-  child: Container(
-    margin: EdgeInsets.symmetric(horizontal: 20),
-    padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
-    decoration: BoxDecoration(
-      color: AppColors.mercury,
-      borderRadius: BorderRadius.circular(12)
-    ),
-    child: Text('Skillbranch')
-  ),
-),)
-
-,);
-});
-
-overlayState.insert(overlayEndtry);
-await Future.delayed(Duration(seconds: 1));
-overlayEndtry.remove();
-
-                   })),                
+                    overlayState.insert(overlayEndtry);
+                    await Future.delayed(Duration(seconds: 1));
+                    overlayEndtry.remove();
+                  })),
                 ],
               ))
         ],
       ),
     );
   }
+
   Widget _buildButton(String text, VoidCallback callback) {
- return GestureDetector(
-                        onTap: callback,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(7),
-                          child: Container(
-                            height: 36,
-                            width: 105,
-                            color: AppColors.dodgerBlue,
-                            child: Center(
-                              child: Text(
-                                text,
-                                style: AppStyles.h3,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
+    return GestureDetector(
+      onTap: callback,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(7),
+        child: Container(
+          height: 36,
+          width: 105,
+          color: AppColors.dodgerBlue,
+          child: Center(
+            child: Text(
+              text,
+              style: AppStyles.h3.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ),
+      ),
+    );
   }
+
   Widget _buildPhotoMeta() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -260,7 +251,7 @@ overlayEndtry.remove();
               return Opacity(
                 opacity: _first_anim.value,
                 child: UserAvatar(
-                    'https://skill-branch.ru/img/speakers/Adechenko.jpg'),
+                   widget.photo.user.profileImage.large),
               );
             },
           ),
@@ -276,9 +267,9 @@ overlayEndtry.remove();
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(name.toString(), style: AppStyles.h1Black),
+                        Text('${widget.photo.user.name}', style: AppStyles.h1Black),
                         Text(
-                          '@$userName',
+                          '@${widget.photo.user.username}',
                           style: AppStyles.h5Black
                               .copyWith(color: AppColors.manatee),
                         )

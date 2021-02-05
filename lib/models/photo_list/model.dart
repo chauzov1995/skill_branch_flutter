@@ -21,217 +21,117 @@ class PhotoList {
   }
 }
 
+
+
 class Photo {
+  Photo({
+    this.id,
+    this.color,
+    this.width,
+    this.height,
+    this.urls,
+    this.likes,
+    this.likedByUser,
+    this.description,
+    this.user,
+  });
+
   String id;
-  String createdAt;
-  String updatedAt;
-  String promotedAt;
+  String color;
   int width;
   int height;
-  String color;
-  String description;
-  String altDescription;
   Urls urls;
-  Links links;
-  //List<Null> categories;
   int likes;
   bool likedByUser;
-  //List<Null> currentUserCollections;
-  Sponsorship sponsorship;
-  Sponsor user;
+  String description;
+  User user;
 
-  Photo(
-      {this.id,
-      this.createdAt,
-      this.updatedAt,
-      this.promotedAt,
-      this.width,
-      this.height,
-      this.color,
-      this.description,
-      this.altDescription,
-      this.urls,
-      this.links,
-      //this.categories,
-      this.likes,
-      this.likedByUser,
-      //this.currentUserCollections,
-      this.sponsorship,
-      this.user});
+  factory Photo.fromJson(Map<String, dynamic> json) => Photo(
+    id: json["id"] == null ? null : json["id"],
+    color: json["color"] == null ? null : json["color"],
+    width: json["width"] == null ? null : json["width"],
+    height: json["height"] == null ? null : json["height"],
+    urls: json["urls"] == null ? null : Urls.fromJson(json["urls"]),
+    likes: json["likes"] == null ? null : json["likes"],
+    likedByUser: json["liked_by_user"] == null ? null : json["liked_by_user"],
+    description: json["description"] == null ? null : json["description"],
+    user: json["user"] == null ? null : User.fromJson(json["user"]),
+  );
 
-  Photo.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    promotedAt = json['promoted_at'];
-    width = json['width'];
-    height = json['height'];
-    color = json['color'];
-    description = json['description'];
-    altDescription = json['alt_description'];
-    urls = json['urls'] != null ? new Urls.fromJson(json['urls']) : null;
-    links = json['links'] != null ? new Links.fromJson(json['links']) : null;
-    //был пустой объект, его генератор не смог обработать
-    //в этом примере он на мне нужен
-    //комментируем
-    // if (json['categories'] != null) {
-    //   categories = new List<Null>();
-    //   json['categories'].forEach((v) {
-    //     categories.add(new Null.fromJson(v));
-    //   });
-    // }
-    likes = json['likes'];
-    likedByUser = json['liked_by_user'] ?? false;
-    //был пустой объект, его генератор не смог обработать
-    //в этом примере он на мне нужен
-    //комментируем
-    // if (json['current_user_collections'] != null) {
-    //   currentUserCollections = new List<Null>();
-    //   json['current_user_collections'].forEach((v) {
-    //     currentUserCollections.add(new Null.fromJson(v));
-    //   });
-    // }
-    sponsorship = json['sponsorship'] != null
-        ? new Sponsorship.fromJson(json['sponsorship'])
-        : null;
-    user = json['user'] != null ? new Sponsor.fromJson(json['user']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['promoted_at'] = this.promotedAt;
-    data['width'] = this.width;
-    data['height'] = this.height;
-    data['color'] = this.color;
-    data['description'] = this.description;
-    data['alt_description'] = this.altDescription;
-    if (this.urls != null) {
-      data['urls'] = this.urls.toJson();
-    }
-    if (this.links != null) {
-      data['links'] = this.links.toJson();
-    }
-    //был пустой объект, его генератор не смог обработать
-    //в этом примере он на мне нужен
-    //комментируем
-    // if (this.categories != null) {
-    //   data['categories'] = this.categories.map((v) => v.toJson()).toList();
-    // }
-    data['likes'] = this.likes;
-    data['liked_by_user'] = this.likedByUser;
-    //был пустой объект, его генератор не смог обработать
-    //в этом примере он на мне нужен
-    //комментируем
-    // if (this.currentUserCollections != null) {
-    //   data['current_user_collections'] =
-    //       this.currentUserCollections.map((v) => v.toJson()).toList();
-    // }
-    if (this.sponsorship != null) {
-      data['sponsorship'] = this.sponsorship.toJson();
-    }
-    if (this.user != null) {
-      data['user'] = this.user.toJson();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id == null ? null : id,
+    "color": color == null ? null : color,
+    "width": width == null ? null : width,
+    "height": height == null ? null : height,
+    "urls": urls == null ? null : urls.toJson(),
+    "likes": likes == null ? null : likes,
+    "liked_by_user": likedByUser == null ? null : likedByUser,
+    "description": description == null ? null : description,
+    "user": user == null ? null : user.toJson(),
+  };
 }
 
 class Urls {
+  Urls({
+    this.raw,
+    this.full,
+    this.regular,
+    this.small,
+    this.thumb,
+  });
+
   String raw;
   String full;
   String regular;
   String small;
   String thumb;
 
-  Urls({this.raw, this.full, this.regular, this.small, this.thumb});
+  factory Urls.fromJson(Map<String, dynamic> json) => Urls(
+    raw: json["raw"] == null ? null : json["raw"],
+    full: json["full"] == null ? null : json["full"],
+    regular: json["regular"] == null ? null : json["regular"],
+    small: json["small"] == null ? null : json["small"],
+    thumb: json["thumb"] == null ? null : json["thumb"],
+  );
 
-  Urls.fromJson(Map<String, dynamic> json) {
-    raw = json['raw'];
-    full = json['full'];
-    regular = json['regular'];
-    small = json['small'];
-    thumb = json['thumb'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['raw'] = this.raw;
-    data['full'] = this.full;
-    data['regular'] = this.regular;
-    data['small'] = this.small;
-    data['thumb'] = this.thumb;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "raw": raw == null ? null : raw,
+    "full": full == null ? null : full,
+    "regular": regular == null ? null : regular,
+    "small": small == null ? null : small,
+    "thumb": thumb == null ? null : thumb,
+  };
 }
 
-class Links {
-  String self;
-  String html;
-  String download;
-  String downloadLocation;
+class User {
+  User({
+    this.id,
+    this.updatedAt,
+    this.username,
+    this.name,
+    this.firstName,
+    this.lastName,
+    this.twitterUsername,
+    this.portfolioUrl,
+    this.bio,
+    this.links,
+    this.profileImage,
+    this.instagramUsername,
+    this.totalCollections,
+    this.totalLikes,
+    this.totalPhotos,
+    this.acceptedTos,
+  });
 
-  Links({this.self, this.html, this.download, this.downloadLocation});
-
-  Links.fromJson(Map<String, dynamic> json) {
-    self = json['self'];
-    html = json['html'];
-    download = json['download'];
-    downloadLocation = json['download_location'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['self'] = this.self;
-    data['html'] = this.html;
-    data['download'] = this.download;
-    data['download_location'] = this.downloadLocation;
-    return data;
-  }
-}
-
-class Sponsorship {
-  List<String> impressionUrls;
-  String tagline;
-  String taglineUrl;
-  Sponsor sponsor;
-
-  Sponsorship(
-      {this.impressionUrls, this.tagline, this.taglineUrl, this.sponsor});
-
-  Sponsorship.fromJson(Map<String, dynamic> json) {
-    impressionUrls = json['impression_urls'].cast<String>();
-    tagline = json['tagline'];
-    taglineUrl = json['tagline_url'];
-    sponsor =
-        json['sponsor'] != null ? new Sponsor.fromJson(json['sponsor']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['impression_urls'] = this.impressionUrls;
-    data['tagline'] = this.tagline;
-    data['tagline_url'] = this.taglineUrl;
-    if (this.sponsor != null) {
-      data['sponsor'] = this.sponsor.toJson();
-    }
-    return data;
-  }
-}
-
-class Sponsor {
   String id;
-  String updatedAt;
+  DateTime updatedAt;
   String username;
   String name;
   String firstName;
-  String lastName;
+  dynamic lastName;
   String twitterUsername;
   String portfolioUrl;
   String bio;
-  String location;
   Links links;
   ProfileImage profileImage;
   String instagramUsername;
@@ -240,76 +140,56 @@ class Sponsor {
   int totalPhotos;
   bool acceptedTos;
 
-  Sponsor(
-      {this.id,
-      this.updatedAt,
-      this.username,
-      this.name,
-      this.firstName,
-      this.lastName,
-      this.twitterUsername,
-      this.portfolioUrl,
-      this.bio,
-      this.location,
-      this.links,
-      this.profileImage,
-      this.instagramUsername,
-      this.totalCollections,
-      this.totalLikes,
-      this.totalPhotos,
-      this.acceptedTos});
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"] == null ? null : json["id"],
+    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+    username: json["username"] == null ? null : json["username"],
+    name: json["name"] == null ? null : json["name"],
+    firstName: json["first_name"] == null ? null : json["first_name"],
+    lastName: json["last_name"],
+    twitterUsername: json["twitter_username"] == null ? null : json["twitter_username"],
+    portfolioUrl: json["portfolio_url"] == null ? null : json["portfolio_url"],
+    bio: json["bio"] == null ? null : json["bio"],
+    links: json["links"] == null ? null : Links.fromJson(json["links"]),
+    profileImage: json["profile_image"] == null ? null : ProfileImage.fromJson(json["profile_image"]),
+    instagramUsername: json["instagram_username"] == null ? null : json["instagram_username"],
+    totalCollections: json["total_collections"] == null ? null : json["total_collections"],
+    totalLikes: json["total_likes"] == null ? null : json["total_likes"],
+    totalPhotos: json["total_photos"] == null ? null : json["total_photos"],
+    acceptedTos: json["accepted_tos"] == null ? null : json["accepted_tos"],
+  );
 
-  Sponsor.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    updatedAt = json['updated_at'];
-    username = json['username'];
-    name = json['name'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    twitterUsername = json['twitter_username'];
-    portfolioUrl = json['portfolio_url'];
-    bio = json['bio'];
-    location = json['location'];
-    links = json['links'] != null ? new Links.fromJson(json['links']) : null;
-    profileImage = json['profile_image'] != null
-        ? new ProfileImage.fromJson(json['profile_image'])
-        : null;
-    instagramUsername = json['instagram_username'];
-    totalCollections = json['total_collections'];
-    totalLikes = json['total_likes'];
-    totalPhotos = json['total_photos'];
-    acceptedTos = json['accepted_tos'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['updated_at'] = this.updatedAt;
-    data['username'] = this.username;
-    data['name'] = this.name;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['twitter_username'] = this.twitterUsername;
-    data['portfolio_url'] = this.portfolioUrl;
-    data['bio'] = this.bio;
-    data['location'] = this.location;
-    if (this.links != null) {
-      data['links'] = this.links.toJson();
-    }
-    if (this.profileImage != null) {
-      data['profile_image'] = this.profileImage.toJson();
-    }
-    data['instagram_username'] = this.instagramUsername;
-    data['total_collections'] = this.totalCollections;
-    data['total_likes'] = this.totalLikes;
-    data['total_photos'] = this.totalPhotos;
-    data['accepted_tos'] = this.acceptedTos;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id == null ? null : id,
+    "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
+    "username": username == null ? null : username,
+    "name": name == null ? null : name,
+    "first_name": firstName == null ? null : firstName,
+    "last_name": lastName,
+    "twitter_username": twitterUsername == null ? null : twitterUsername,
+    "portfolio_url": portfolioUrl == null ? null : portfolioUrl,
+    "bio": bio == null ? null : bio,
+    "links": links == null ? null : links.toJson(),
+    "profile_image": profileImage == null ? null : profileImage.toJson(),
+    "instagram_username": instagramUsername == null ? null : instagramUsername,
+    "total_collections": totalCollections == null ? null : totalCollections,
+    "total_likes": totalLikes == null ? null : totalLikes,
+    "total_photos": totalPhotos == null ? null : totalPhotos,
+    "accepted_tos": acceptedTos == null ? null : acceptedTos,
+  };
 }
 
-class SponsorLinks {
-  //changed the name
+class Links {
+  Links({
+    this.self,
+    this.html,
+    this.photos,
+    this.likes,
+    this.portfolio,
+    this.following,
+    this.followers,
+  });
+
   String self;
   String html;
   String photos;
@@ -318,56 +198,47 @@ class SponsorLinks {
   String following;
   String followers;
 
-  SponsorLinks(
-      {this.self,
-      this.html,
-      this.photos,
-      this.likes,
-      this.portfolio,
-      this.following,
-      this.followers});
+  factory Links.fromJson(Map<String, dynamic> json) => Links(
+    self: json["self"] == null ? null : json["self"],
+    html: json["html"] == null ? null : json["html"],
+    photos: json["photos"] == null ? null : json["photos"],
+    likes: json["likes"] == null ? null : json["likes"],
+    portfolio: json["portfolio"] == null ? null : json["portfolio"],
+    following: json["following"] == null ? null : json["following"],
+    followers: json["followers"] == null ? null : json["followers"],
+  );
 
-  SponsorLinks.fromJson(Map<String, dynamic> json) {
-    self = json['self'];
-    html = json['html'];
-    photos = json['photos'];
-    likes = json['likes'];
-    portfolio = json['portfolio'];
-    following = json['following'];
-    followers = json['followers'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['self'] = this.self;
-    data['html'] = this.html;
-    data['photos'] = this.photos;
-    data['likes'] = this.likes;
-    data['portfolio'] = this.portfolio;
-    data['following'] = this.following;
-    data['followers'] = this.followers;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "self": self == null ? null : self,
+    "html": html == null ? null : html,
+    "photos": photos == null ? null : photos,
+    "likes": likes == null ? null : likes,
+    "portfolio": portfolio == null ? null : portfolio,
+    "following": following == null ? null : following,
+    "followers": followers == null ? null : followers,
+  };
 }
 
 class ProfileImage {
+  ProfileImage({
+    this.small,
+    this.medium,
+    this.large,
+  });
+
   String small;
   String medium;
   String large;
 
-  ProfileImage({this.small, this.medium, this.large});
+  factory ProfileImage.fromJson(Map<String, dynamic> json) => ProfileImage(
+    small: json["small"] == null ? null : json["small"],
+    medium: json["medium"] == null ? null : json["medium"],
+    large: json["large"] == null ? null : json["large"],
+  );
 
-  ProfileImage.fromJson(Map<String, dynamic> json) {
-    small = json['small'];
-    medium = json['medium'];
-    large = json['large'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['small'] = this.small;
-    data['medium'] = this.medium;
-    data['large'] = this.large;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "small": small == null ? null : small,
+    "medium": medium == null ? null : medium,
+    "large": large == null ? null : large,
+  };
 }

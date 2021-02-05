@@ -118,7 +118,7 @@ class _PhotoListState extends State<PhotoListScreen> {
               )
             ]),
             Text(
-              '${photo.altDescription ?? 'sample image'}',
+              '${photo.description ?? 'sample image'}',
               textAlign: TextAlign.center,
             ),
           ],

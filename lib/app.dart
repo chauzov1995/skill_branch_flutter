@@ -19,12 +19,10 @@ class MyApp extends StatelessWidget {
           FullScreenImageArguments args =
               (setting.arguments as FullScreenImageArguments);
           final route = FullScreenImage(
-            userName: args.userName,
-            altDescription: args.altDescription,
-            name: args.name,
+
             key: args.key,
             photo: args.photo,
-            userPhoto: args.userPhoto,
+
             heroTag: args.heroTag,
           );
           if (Platform.isAndroid) {

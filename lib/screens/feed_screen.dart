@@ -84,27 +84,24 @@ class _FeedsState extends State<Feed> {
   }
 
   Widget _buildItem(Photo photo) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, '/fullScreenImage',arguments: FullScreenImageArguments(
-            photo:  photo.urls.regular,
-            altDescription: photo.description,
-            userName: photo.user.username,
-            name: photo.user.name,
-            userPhoto:  photo.user.profileImage.large,
-            heroTag: 'tag',
-            routeSettings: RouteSettings(arguments: 'Some title')
-          ));
-      },
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Hero(
           //    tag: 'tag',
           //   child:
-          PhotoView(
-            photoLink:  photo.urls.regular,
-          ),
+        GestureDetector(
+        onTap: () {
+      Navigator.pushNamed(context, '/fullScreenImage',arguments: FullScreenImageArguments(
+          photo:  photo,
+          heroTag: 'tag',
+          routeSettings: RouteSettings(arguments: 'Some title')
+      ));
+    },
+    child:
+    PhotoView(
+            photoLink:  photo.urls.regular, placeholder: photo.color,
+          )),
           //  ),
           _buildPhotoMeta(photo),
           Padding(
@@ -117,7 +114,7 @@ class _FeedsState extends State<Feed> {
             ),
           )
         ],
-      ),
+
     );
   }
 
@@ -127,9 +124,18 @@ class _FeedsState extends State<Feed> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          GestureDetector(onTap: (){
+    Navigator.pushNamed(context, '/fullScreenImage',arguments: FullScreenImageArguments(
+    photo:  photo,
+    heroTag: 'tag',
+    routeSettings: RouteSettings(arguments: 'Some title')
+    ));
+
+
+          } ,child:
           Row(
             children: [
-              UserAvatar('https://skill-branch.ru/img/speakers/Adechenko.jpg'),
+              UserAvatar(photo.user.profileImage.large),
               SizedBox(
                 width: 6,
               ),
@@ -145,8 +151,8 @@ class _FeedsState extends State<Feed> {
                 ],
               )
             ],
-          ),
-          LikeButton(photo.likes, photo.likedByUser),
+          ),),
+          LikeButton(photo),
         ],
       ),
     );
@@ -159,7 +165,7 @@ class _FeedsState extends State<Feed> {
         isLoading = true;
       });
       var tempList = await DataProvider.getPhotos(page, 15);
-print("asdasdadada ${tempList.photos.length}");
+
       setState(() {
         isLoading = false;
         data.addAll(tempList.photos);
