@@ -56,27 +56,7 @@ class _FeedsState extends State<Feed> {
     return Scaffold(
       body:
 
-      DataProvider.authToken == ""?  Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Press button to login',
-            ),
-            Container(
-              width: 100,
-              child: FlatButton(
-                child: Text("Login"),
-                color: Colors.blue,
-                textColor: Colors.white,
-                disabledColor: Colors.grey,
-                disabledTextColor: Colors.black,
-                onPressed: () => doLogin(context),
-              ),
-            ),
-          ],
-        ),
-      ):Hero(
+    Hero(
           tag: 'tag',
           child: ListView.builder(
               controller: _scrollController,
@@ -99,8 +79,8 @@ class _FeedsState extends State<Feed> {
                     ),
                   ],
                 );
-              })),
-    );
+              }),
+    ));
   }
 
   Widget _buildItem(Photo photo) {
@@ -172,23 +152,7 @@ class _FeedsState extends State<Feed> {
     );
   }
 
-  void doLogin(BuildContext context) {
-    if (DataProvider.authToken == "") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => WebViewPage()),
-      ).then((value) {
-        RegExp exp = RegExp("(?<==).*");
-        var oneTimeCode = exp.stringMatch(value);
 
-        DataProvider.doLogin(oneTimeCode: oneTimeCode).then((value) {
-          DataProvider.authToken = value.accessToken;
-
-
-        });
-      });
-    }
-  }
   void _getData(int page) async {
     if (!isLoading) {
       setState(() {

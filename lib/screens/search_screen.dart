@@ -29,7 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent * 0.8) {
-        _getData(pageCount);
+        //_getData(pageCount);
       }
     });
     print('set listener');

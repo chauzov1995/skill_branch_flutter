@@ -1,9 +1,10 @@
+import 'package:FlutterGalleryApp/res/HexColor.dart';
 import 'package:FlutterGalleryApp/res/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PhotoView extends StatelessWidget {
-  PhotoView({Key key, this.photoLink, this.placeholder}) : super(key: key);
+  PhotoView({Key key, this.photoLink, this.placeholder="#ffffff"}) : super(key: key);
 
   final String photoLink;
   final String placeholder;
@@ -19,7 +20,7 @@ class PhotoView extends StatelessWidget {
           child: AspectRatio(aspectRatio: 1,
           child:  CachedNetworkImage(
             imageUrl: photoLink,
-            placeholder: (context, url) => CircularProgressIndicator(),
+            placeholder: (context, url) => Container(color: HexColor(placeholder),),
             errorWidget: (context, url, error) => Icon(Icons.error),
             fit: BoxFit.cover,
           ),),

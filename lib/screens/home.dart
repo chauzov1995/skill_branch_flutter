@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:FlutterGalleryApp/app.dart';
+import 'package:FlutterGalleryApp/data_provider.dart';
+import 'package:FlutterGalleryApp/pages/webview_page.dart';
 import 'package:FlutterGalleryApp/screens/profile_screen.dart';
 import 'package:FlutterGalleryApp/screens/search_screen.dart';
 import 'package:connectivity/connectivity.dart';
@@ -110,8 +112,51 @@ subscription.cancel();
         },
         items: _tabs,
       ),
-      body: PageStorage(bucket: bucket, child: pages[currentTab]),
-    );
+      body:   DataProvider.authToken == ""?  Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Press button to login',
+            ),
+            Container(
+              width: 100,
+              child: FlatButton(
+                child: Text("Login"),
+                color: Colors.blue,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                onPressed: () => doLogin(context),
+              ),
+            ),
+          ],
+        ),
+      ): PageStorage(bucket: bucket, child: pages[currentTab]));
+
+  }
+
+  void doLogin(BuildContext context) {
+    if (DataProvider.authToken == "") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WebViewPage()),
+      ).then((value) {
+        RegExp exp = RegExp("(?<==).*");
+        var oneTimeCode = exp.stringMatch(value);
+
+        DataProvider.doLogin(oneTimeCode: oneTimeCode).then((value) async {
+          DataProvider.authToken = value.accessToken;
+
+          print(DataProvider.authToken);
+          DataProvider.myprofile= await DataProvider.getProfile();
+          setState(() {
+
+          });
+
+        });
+      });
+    }
   }
 }
 

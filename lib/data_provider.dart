@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:FlutterGalleryApp/models/profile.dart';
+
 import 'models/auth/model.dart';
 import 'models/photo_list/model.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +32,7 @@ class DataProvider {
       'Zj5y84pjo-RMxC80h-86QVDAptJCAHyxUTqWLfjpUno'; //app secrey key from console
   static const String authUrl =
       'https://unsplash.com/oauth/authorize?client_id=$_accessKey&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=public+write_likes'; //authorize url from https://unsplash.com/oauth/applications/{your_app_id}
+static  Profile myprofile;
 
   static Future<Auth> doLogin({String oneTimeCode}) async {
     var response = await http.post('https://unsplash.com/oauth/token',
@@ -79,6 +82,20 @@ class DataProvider {
    // print(response.body);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return PhotoList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error: ${response.reasonPhrase}');
+    }
+  }
+
+  static Future<Profile> getProfile() async {
+    var response = await http.get(
+        'https://api.unsplash.com/me',
+        headers: {'Authorization': 'Bearer $authToken'});
+    // print(response.body);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      String body = utf8.decode(response.bodyBytes);
+      print(body);
+      return Profile.fromJson(json.decode(body));
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
     }

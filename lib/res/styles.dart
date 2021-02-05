@@ -49,7 +49,7 @@ class AppStyles {
     color: AppColors.black,
     fontWeight: FontWeight.normal,
     fontStyle: FontStyle.normal,
-    letterSpacing: -0.41,
+   // letterSpacing: -0.41,
   );
 
   static const h1Black = TextStyle(
