@@ -101,6 +101,20 @@ static  Profile myprofile;
     }
   }
 
+
+  static Future<PhotoList> getSvyaznoePhoto(String photo_id) async {
+    var response = await http.get('https://unsplash.com/napi/photos/${photo_id}/related',
+        headers: {'Authorization': 'Bearer $authToken'});
+    print(response.body);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return PhotoList.fromJson(json.decode(response.body)['results']);
+    } else {
+      throw Exception('Error: ${response.reasonPhrase}');
+    }
+  }
+
+
+
   static Future<Photo> getRandomPhoto() async {
     var response = await http.get('https://api.unsplash.com/photos/random',
         headers: {'Authorization': 'Bearer $authToken'});

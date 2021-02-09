@@ -1,14 +1,16 @@
+import 'package:FlutterGalleryApp/data_provider.dart';
 import 'package:FlutterGalleryApp/models/photo_list/model.dart';
 import 'package:FlutterGalleryApp/res/colors.dart';
 import 'package:FlutterGalleryApp/res/styles.dart';
 import 'package:FlutterGalleryApp/widgets/claim_bottom_sheet.dart';
+import 'package:FlutterGalleryApp/widgets/photoSearch.dart';
 import 'package:FlutterGalleryApp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 import 'package:gallery_saver/gallery_saver.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 class FullScreenImageArguments {
   FullScreenImageArguments({
@@ -47,8 +49,10 @@ class _FullScreenImageState extends State<FullScreenImage>
   Animation<double> _first_anim;
   Animation<double> _second_anim;
 
+  PhotoList svyazphoto;
+
   @override
-  void initState() {
+  initState() {
     super.initState();
 
     heroTag = widget.heroTag;
@@ -64,6 +68,13 @@ class _FullScreenImageState extends State<FullScreenImage>
         parent: _controller, curve: Interval(0.5, 1.0, curve: Curves.ease)));
 
     // _controller = Tween(begin: 0.5, end: 1.0).animate(_controller);
+
+    firstinit();
+  }
+
+  firstinit() async {
+    svyazphoto = await DataProvider.getSvyaznoePhoto(widget.photo.id);
+    print(svyazphoto.photos.length);
   }
 
   @override
@@ -129,24 +140,39 @@ class _FullScreenImageState extends State<FullScreenImage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        shrinkWrap: true,
+        //  crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Hero(
             tag: heroTag,
             child: PhotoView(
               photoLink: widget.photo.urls.regular,
+              width: widget.photo.width,
+              height: widget.photo.height,
+              placeholder: widget.photo.color,
               //  placeholder: kFLutterDash.,
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: widget.photo.description==null?Container(): Text(
-              '${widget.photo.description}',
+            child: Text(
+              '2 gours ago',
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: AppStyles.h3.copyWith(color: AppColors.black),
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: widget.photo.description == null
+                ? Container()
+                : Text(
+                    '${widget.photo.description}',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppStyles.h3.copyWith(color: AppColors.black),
+                  ),
           ),
           _buildPhotoMeta(),
           Padding(
@@ -162,16 +188,23 @@ class _FullScreenImageState extends State<FullScreenImage>
                     showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                              title: Text('download photos'),
+                              title: Text('Download photos'),
                               content: Text(
                                   'Are you sure you want to download a photo?'),
                               actions: [
                                 FlatButton(
                                   child: Text('Download'),
-                                  onPressed: () {
-                                    GallerySaver.saveImage(
-                                        'https://skill-branch.ru/img/speakers/Adechenko.jpg');
+                                  onPressed: () async {
                                     Navigator.of(context).pop();
+                                    try {
+                                      await GallerySaver.saveImage(
+                                          widget.photo.urls.regular);
+                                      showdial('Succes',
+                                          'Photo was successfully saved');
+                                    } catch (ex) {
+                                      showdial('Error',
+                                          'Error occurred while saving photo');
+                                    }
                                   },
                                 ),
                                 FlatButton(
@@ -186,6 +219,8 @@ class _FullScreenImageState extends State<FullScreenImage>
                   SizedBox(width: 12),
                   Expanded(
                       child: _buildButton('Visit', () async {
+                    await launch(widget.photo.urls.regular);
+                    /*
                     OverlayState overlayState = Overlay.of(context);
 
                     OverlayEntry overlayEndtry =
@@ -211,13 +246,59 @@ class _FullScreenImageState extends State<FullScreenImage>
 
                     overlayState.insert(overlayEndtry);
                     await Future.delayed(Duration(seconds: 1));
-                    overlayEndtry.remove();
+                    overlayEndtry.remove();*/
                   })),
                 ],
-              ))
+              )),
+          Expanded(
+              // height: 600,
+              child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0,
+                    physics: NeverScrollableScrollPhysics(),
+                    // crossAxisCount: svyazphoto.photos.length,
+                    children: List.generate(
+                      svyazphoto.photos.length,
+                      (index) =>
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/fullScreenImage',
+                                    arguments: FullScreenImageArguments(
+                                        photo: svyazphoto.photos[index],
+                                        heroTag: 'tag',
+                                        routeSettings: RouteSettings(arguments: 'Some title')));
+                              },
+                              child:
+                          PhotoViewSerach(
+                        photoLink: svyazphoto.photos[index].urls.regular,
+                        placeholder: svyazphoto.photos[index].color,
+                              )),
+                    ),
+                  )))
         ],
       ),
     );
+  }
+
+  void showdial(title, body) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(title),
+              content: Text(body),
+              actions: [
+                FlatButton(
+                  child: Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
 
   Widget _buildButton(String text, VoidCallback callback) {
@@ -232,7 +313,8 @@ class _FullScreenImageState extends State<FullScreenImage>
           child: Center(
             child: Text(
               text,
-              style: AppStyles.h3.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+              style: AppStyles.h3
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -250,8 +332,7 @@ class _FullScreenImageState extends State<FullScreenImage>
             builder: (BuildContext context, Widget child) {
               return Opacity(
                 opacity: _first_anim.value,
-                child: UserAvatar(
-                   widget.photo.user.profileImage.large),
+                child: UserAvatar(widget.photo.user.profileImage.large),
               );
             },
           ),
@@ -267,7 +348,8 @@ class _FullScreenImageState extends State<FullScreenImage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${widget.photo.user.name}', style: AppStyles.h1Black),
+                        Text('${widget.photo.user.name}',
+                            style: AppStyles.h1Black),
                         Text(
                           '@${widget.photo.user.username}',
                           style: AppStyles.h5Black
